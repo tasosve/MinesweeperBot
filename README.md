@@ -1,6 +1,10 @@
 # MinesweeperBot
 This is a minesweeper auto-playing bot
 
+*Disclaimer*
+This project is purely focused on the solving part of minesweeper.
+
+
 *NOT COMPLETED YET*
 
 To run, a live server is needed.
