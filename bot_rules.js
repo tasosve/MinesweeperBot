@@ -1,18 +1,33 @@
 import {board} from "./bot_player.js"
-import {threesixtyScan, reply_click, ScanBoard} from "./bot_eye.js"
+import {
+    threesixtyScan,
+    Position,
+    ScanBoard,
+    rightClick,
+    leftClick,
+    checkConditions,
+} from "./bot_eye.js"
 
-export function markingRules() {
-    var nullCheck
-    var nullCount = 0
-    var singleMark
-    var multiMark = []
+export function rotationAlgorithm() {
     ScanBoard()
-    //console.table(board)
+    // console.table(board)
+    basicMarkingRules()
+    elimRules()
+    MarkingRules()
+}
+
+export function basicMarkingRules() {
+    let nullCount = 0
+    const multiMark = []
     for (let i = 0; i < board.length; i++) {
         for (let n = 1; n < 9; n++) {
             if (board[i][3] == n) {
                 for (let j = 0; j < 8; j++) {
-                    nullCheck = threesixtyScan(board[i][0], board[i][1], j)
+                    const nullCheck = threesixtyScan(
+                        board[i][0],
+                        board[i][1],
+                        j
+                    )
                     if (nullCheck == null || board[nullCheck][2] == "number") {
                         nullCount++
                     } else if (
@@ -25,22 +40,10 @@ export function markingRules() {
 
                 if (nullCount == 8 - n) {
                     for (let k = 0; k < multiMark.length; k++) {
-                        var element = document.getElementById(`${multiMark[k]}`)
                         if (board[multiMark[k]][2] == "marked") {
                             continue
                         } else {
-                            board[multiMark[k]][2] = "marked"
-                            if (window.CustomEvent) {
-                                element.dispatchEvent(
-                                    new CustomEvent("contextmenu")
-                                )
-                            } else if (document.createEvent) {
-                                var ev = document.createEvent("HTMLEvents")
-                                ev.initEvent("contextmenu", true, false)
-                                element.dispatchEvent(ev)
-                            } else {
-                                element.fireEvent("oncontextmenu")
-                            }
+                            rightClick(multiMark[k])
                         }
                     }
                     multiMark.length = 0
@@ -51,29 +54,27 @@ export function markingRules() {
         }
         nullCount = 0
     }
-    elimRules()
-    //setTimeout(elimRules(), 3000)
 }
 
 export function elimRules() {
-    var nullCheck
     let markedFlag
-    var hiddenBlocks = []
-    //ScanBoard()
+    const hiddenBlocks = []
     for (let i = 0; i < board.length; i++) {
         for (let n = 1; n < 9; n++) {
             if (board[i][3] == n) {
                 for (let j = 0; j < 9; j++) {
                     if (j == 8 && markedFlag == n) {
                         hiddenBlocks.forEach((item) => {
-                            board[item][2] = "number"
-                            document.getElementById(`${item}`).click()
-                            console.log(document.getElementById(`${item}`))
+                            leftClick(item)
                             markedFlag = 0
                         })
                         continue
                     }
-                    nullCheck = threesixtyScan(board[i][0], board[i][1], j)
+                    const nullCheck = threesixtyScan(
+                        board[i][0],
+                        board[i][1],
+                        j
+                    )
                     if (
                         nullCheck == null ||
                         typeof board[nullCheck][3] == "string"
@@ -91,5 +92,32 @@ export function elimRules() {
                 markedFlag = 0
             }
         }
+    }
+}
+
+export function MarkingRules() {
+    const currentMarkedBlocks = []
+    const currentBlocks = []
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < 9; j++) {
+            if (j == 8) {
+                checkConditions(i, currentBlocks, currentMarkedBlocks)
+                currentBlocks.length = 0
+                currentMarkedBlocks.length = 0
+                continue
+            }
+            const nullCheck = threesixtyScan(board[i][0], board[i][1], j)
+            if (nullCheck == null || typeof board[nullCheck][3] == "string") {
+                continue
+            }
+            if (board[nullCheck][2] == "marked") {
+                currentMarkedBlocks.push(nullCheck)
+            }
+            if (board[nullCheck][2] == "hidden") {
+                currentBlocks.push(nullCheck)
+            }
+        }
+        currentBlocks.length = 0
+        currentMarkedBlocks.length = 0
     }
 }

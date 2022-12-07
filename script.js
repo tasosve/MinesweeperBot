@@ -8,7 +8,7 @@ import {
 } from "./ms_logic.js"
 
 export const BOARD_SIZE = 12
-export const NUMBER_OF_MINES = 24
+export const NUMBER_OF_MINES = 25
 
 const board = createBoard(BOARD_SIZE, NUMBER_OF_MINES)
 const boardElement = document.querySelector(".board")

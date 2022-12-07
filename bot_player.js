@@ -1,25 +1,27 @@
 import {ScanBoard, Position, threesixtyScan, reply_click} from "./bot_eye.js"
-import {markingRules, elimRules} from "./bot_rules.js"
+import {rotationAlgorithm} from "./bot_rules.js"
 
-export var board = []
+export const board = []
 
-let anyClick = document.querySelector(".board")
-anyClick.onclick = function () {
-    action()
-}
-anyClick.addEventListener("contextmenu", (e) => {
-    e.preventDefault()
-    action()
-})
+const button = document.getElementById("button")
+button.addEventListener("click", action)
+
+// let anyClick = document.querySelector(".board")
+// anyClick.onclick = function () {
+//     action()
+// }
+// anyClick.addEventListener("contextmenu", (e) => {
+//     e.preventDefault()
+//     action()
+// })
 
 function action() {
-    //console.table(board)
-    var startTime = performance.now()
+    const startTime = performance.now()
 
-    markingRules()
+    rotationAlgorithm()
     board.length = 0
 
-    var endTime = performance.now()
+    const endTime = performance.now()
 
     console.log(`${endTime - startTime} milliseconds`)
 
