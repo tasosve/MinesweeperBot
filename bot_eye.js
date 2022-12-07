@@ -216,9 +216,6 @@ export function previousHiddenBlocks(offset) {
         ) {
             continue
         }
-        // if (board[prevBlockCount][2] == "marked") {
-        //     currentMarkedBlocks.push(prevBlockCount)
-        // }
         if (board[prevBlockCount][2] == "hidden") {
             previousBlocks.push(prevBlockCount)
         }
